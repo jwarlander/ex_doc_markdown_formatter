@@ -1,0 +1,44 @@
+# <%= module_title(module) %>
+<%= if module.source_url do %>
+
+_[(View Source)](<%= module.source_url %>)_
+<% end %>
+<%= if deprecated = module.deprecated do %>
+
+_This <%= module.type %> is deprecated. <%= h(deprecated) %>.
+<% end %>
+<%= if module.doc do %>
+<%= module.doc %>
+<% end %>
+<%= if summary_map.types != [] do %>
+## Types
+
+<%= for type_node <- summary_map.types do
+detail_template(type_node, module)
+end %>
+<% end %>
+<%= if summary_map.guards != [] do %>
+
+## Guards
+
+<%= for guard_node <- summary_map.guards do
+  detail_template(guard_node, module)
+end %>
+<% end %><%= if summary_map.functions != [] do %>
+
+## Functions
+
+<%= for function_node <- summary_map.functions do
+  detail_template(function_node, module)
+end %>
+<% end %>
+<%= if summary_map.callbacks != [] do %>
+
+## Callbacks
+
+<%= for callback_node <- summary_map.callbacks do
+  detail_template(callback_node, module)
+end %>
+<% end %>
+
+<%= footer_template(config) %>

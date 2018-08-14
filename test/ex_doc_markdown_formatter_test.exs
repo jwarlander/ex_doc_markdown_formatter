@@ -2,7 +2,7 @@ defmodule ExDocMarkdownFormatterTest do
   use ExUnit.Case
   doctest ExDocMarkdownFormatter
 
-  test "greets the world" do
-    assert ExDocMarkdownFormatter.hello() == :world
+  test "dummy" do
+    assert true
   end
 end

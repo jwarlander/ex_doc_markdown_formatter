@@ -1,13 +1,9 @@
-# <%= module_title(module) %>
-<%= if module.source_url do %>
+# <%= module_title(module) %><%= if module.source_url do %> [(Source)](<%= module.source_url %>)<% end %>
 
-_[(View Source)](<%= module.source_url %>)_
-<% end %>
 <%= if deprecated = module.deprecated do %>
+_This <%= module.type %> is deprecated. <%= h(deprecated) %>._
 
-_This <%= module.type %> is deprecated. <%= h(deprecated) %>.
-<% end %>
-<%= if module.doc do %>
+<% end %><%= if module.doc do %>
 <%= module.doc %>
 <% end %><%= if summary_map.types != [] do %>
 

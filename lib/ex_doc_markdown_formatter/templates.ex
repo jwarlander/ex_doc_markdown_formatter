@@ -21,8 +21,12 @@ defmodule ExDocMarkdownFormatter.Templates do
     |> Enum.join()
   end
 
-  defp detail_header(%{signature: signature, source_url: url}) do
-    ["### ", signature, (url && " ([Source](#{url}))") || ""]
+  defp detail_header(%{signature: signature}) do
+    [
+      "### ",
+      String.replace(signature, "\\", "\\\\"),
+      "\n\n"
+    ]
   end
 
   defp detail_annotations(%{annotations: annotations}) do
@@ -34,18 +38,19 @@ defmodule ExDocMarkdownFormatter.Templates do
 
   defp detail_specs(node) do
     if specs = get_specs(node) do
-      list = for spec <- specs, do: "- #{spec}\n"
-      list ++ ["\n"]
+      list = for spec <- specs, do: "- _#{spec}_\n"
+      ["Specs:\n\n", list, "\n"]
     end || ""
   end
 
-  defp detail_docs(node) do
-    dep_str =
-      if deprecated = node.deprecated do
-        "*This #{node.type} is deprecated. #{h(deprecated)}.\n\n"
-      end || ""
+  defp detail_docs(%{deprecated: deprecated, doc: doc, type: type, source_url: url}) do
+    type_name = type |> to_string() |> String.capitalize()
 
-    [dep_str, node.doc || ""]
+    [
+      if(url, do: "<small>[_[#{type_name} Source]_](#{url})</small>  \n", else: ""),
+      if(deprecated, do: "*This #{type} is deprecated. #{h(deprecated)}.\n\n", else: ""),
+      doc || ""
+    ]
   end
 
   @doc """

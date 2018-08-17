@@ -1,17 +1,17 @@
-### <%= module_node.signature %>
-<%= if module_node.source_url do %>
-
-_([View Source](<%= module_node.source_url %>))_
+### <%= module_node.signature %> <%= if module_node.source_url do %>
+_([Source](<%= module_node.source_url %>))_
 <% end %>
-<%= for annotation <- module_node.annotations do %>
+<%= if module_node.annotations do %>
+<% for annotation <- module_node.annotations do %>
 (<%= annotation %>)
+<% end %>
 <% end %>
 <%= if specs = get_specs(module_node) do %>
 <%= for spec <- specs do %>
-<%= spec %>
+- <%= spec %>
 <% end %>
-<% end %><%= if deprecated = module_node.deprecated do %>
-
+<% end %>
+<%= if deprecated = module_node.deprecated do %>
 *This <%= module_node.type %> is deprecated. <%= h(deprecated) %>.
 <% end %>
 <%= module_node.doc %>

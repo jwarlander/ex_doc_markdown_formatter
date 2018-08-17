@@ -10,6 +10,44 @@ defmodule ExDocMarkdownFormatter.Templates do
     module_template(config, module_node, summary_map, nodes_map)
   end
 
+  def detail_section(node, _module) do
+    [
+      detail_header(node),
+      detail_annotations(node),
+      detail_specs(node),
+      detail_docs(node)
+    ]
+    |> Enum.map(&(&1 || ""))
+    |> Enum.join()
+  end
+
+  defp detail_header(%{signature: signature, source_url: url}) do
+    ["### ", signature, (url && " ([Source](#{url}))") || ""]
+  end
+
+  defp detail_annotations(%{annotations: annotations}) do
+    if annotations do
+      list = for annotation <- annotations, do: "(#{annotation})"
+      list ++ ["\n\n"]
+    end || ""
+  end
+
+  defp detail_specs(node) do
+    if specs = get_specs(node) do
+      list = for spec <- specs, do: "- #{spec}\n"
+      list ++ ["\n"]
+    end || ""
+  end
+
+  defp detail_docs(node) do
+    dep_str =
+      if deprecated = node.deprecated do
+        "*This #{node.type} is deprecated. #{h(deprecated)}.\n\n"
+      end || ""
+
+    [dep_str, node.doc || ""]
+  end
+
   @doc """
   Get the full specs from a function, already in HTML form.
   """
